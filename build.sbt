@@ -1,3 +1,4 @@
+import sbt._
 import Dependencies._
 
 organization in ThisBuild := "io.tabmo"
@@ -9,28 +10,33 @@ bintrayOrganization       := Some("tabmo")
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
 
-addCompilerPlugin(CompilerPlugin.kindProjection)
-
 lazy val commonSettings = Seq(
-  scalacOptions ++= commonScalacOptions
+  scalacOptions   ++= commonScalacOptions,
+  fork in test    := true
 )
 
 lazy val root = (project in file("."))
+  .aggregate(core)
+  .aggregate(`extra-rules`)
+  .aggregate(`extra-rules-joda`)
+
+lazy val core = (project in file("core"))
   .settings(commonSettings)
   .settings(commonLibrairies)
+  .settings(addCompilerPlugin(CompilerPlugin.kindProjection))
   .settings(libraryDependencies +=  Library.scalatestCats)
   .settings(libraryDependencies ++= Library.circe)
 
-lazy val `extra-rules` = (project in file("modules/circe-validation/extra-rules"))
+lazy val `extra-rules` = (project in file("extra-rules"))
   .settings(commonSettings)
   .settings(commonLibrairies)
-  .dependsOn(root)
+  .dependsOn(core)
 
-lazy val `extra-rules-joda` = (project in file("modules/circe-validation/extra-rules-joda"))
+lazy val `extra-rules-joda` = (project in file("extra-rules-joda"))
   .settings(commonSettings)
   .settings(commonLibrairies)
   .settings(libraryDependencies += Library.joda)
-  .dependsOn(root)
+  .dependsOn(core)
 
 lazy val commonLibrairies = Seq (
   libraryDependencies += Library.scalatest,
