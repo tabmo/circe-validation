@@ -1,18 +1,12 @@
 package rules
 
-import cats.data.Validated.{Invalid, Valid}
+import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.StringRules
-import io.tabmo.json.rules.{Rule, ValidationError}
 import org.scalacheck.Gen
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatest.prop.PropertyChecks
 
 import scala.util.Random
 
-class StringRulesSpec extends WordSpec with PropertyChecks with Matchers {
-
-  def executeRule(r: Rule[String, String], value: String) = r.rule.apply(value)
-  def generateRuleError(error: String) = Invalid(ValidationError(error))
+class StringRulesSpec extends RulesSpec {
 
   "String rules" when {
     "a minLength rule" should {
@@ -33,7 +27,7 @@ class StringRulesSpec extends WordSpec with PropertyChecks with Matchers {
     "a maxLength rule" should {
 
       "accept a String with an under-sized cod" in {
-        forAll(Gen.alphaStr.filter(_.length <= 40)) { str =>
+        forAll(Gen.alphaStr.filter(_.length < 40)) { str =>
           executeRule(StringRules.maxLength(40), str) should ===(Valid(str))
         }
       }
