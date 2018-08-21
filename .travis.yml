@@ -1,0 +1,19 @@
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+    - $HOME/.coursier
+    - $HOME/.cache
+
+language: scala
+scala: 
+  - 2.12.4
+
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION compile test
+
+jdk:
+  - oraclejdk8

@@ -1,7 +1,7 @@
 package io.tabmo.json
 
 import io.circe.Decoder.Result
-import io.circe.{ACursor, Decoder}
+import io.circe.{ACursor, Decoder, KeyDecoder}
 
 import scala.collection.generic.CanBuildFrom
 
@@ -25,7 +25,7 @@ package object rules {
 
     def readTraversable[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Traversable[O]] = rule.executeTraversable(c)
 
-    def readMap[I, O](rule: Rule[I, O])(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Traversable[O]]): Result[Map[I, O]] = rule.executeMap(c)
+    def readMap[I, O](rule: Rule[I, O])(implicit decodeK: KeyDecoder[I], d: Decoder[O]): Result[Map[I, O]] = rule.executeMap(c)
 
     def readOrElse[I, O](rule: Rule[I, O])(ruleOrElse: Rule[I, O])(implicit d: Decoder[I]): Result[O] = read(rule).orElse(read(ruleOrElse))
 

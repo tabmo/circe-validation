@@ -58,7 +58,7 @@ object JodaRules extends GenericRules {
   def isoDate(errorCode: String = "error.expected.date.isoformat"): Rule[String, java.util.Date] = Rule((str: String) => {
 
     val parser = ISODateTimeFormat.dateOptionalTimeParser()
-    Try(parser.parseDateTime(String).toDate())
+    Try(parser.parseDateTime(str).toDate())
       .map(Valid.apply)
       .getOrElse(Invalid(ValidationError(errorCode)))
   })
