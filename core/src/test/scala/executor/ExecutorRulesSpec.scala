@@ -12,7 +12,7 @@ class ExecutorRulesSpec extends FlatSpec with Matchers with GenericRules with Pr
   import io.tabmo.json.rules._
 
   def validStringtoString(msg: String = "valid"): Rule[String, String]   = validateWith[String](msg)(_ => true)
-  def validStringtoInt(msg: String = "valid"): Rule[String, Int] = Rule((str: String) => { Valid(str.toInt) })
+  def validStringtoInt(): Rule[String, Int] = Rule((str: String) => { Valid(str.toInt) })
   def invalidStringtoString(msg: String = "invalid"): Rule[String, String] = validateWith[String](msg)(_ => false)
 
   "Rule executor" should
