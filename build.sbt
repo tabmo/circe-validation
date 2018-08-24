@@ -1,24 +1,24 @@
-import sbt._
 import Dependencies._
+import sbt._
 
 organization in ThisBuild := "io.tabmo"
 scalaVersion in ThisBuild := "2.12.6"
 version in ThisBuild      := "0.0.1"
 name                      := "Circe Validation"
-bintrayOrganization       := Some("tabmo")
-
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
 
 lazy val commonSettings = Seq(
-  scalacOptions   ++= commonScalacOptions,
-  fork in test    := true
+  scalacOptions         ++= commonScalacOptions,
+  fork in test          := true,
+  bintrayOrganization   := Some("tabmo")
 )
 
 lazy val root = (project in file("."))
   .aggregate(core)
   .aggregate(`extra-rules`)
   .aggregate(`extra-rules-joda`)
+  .settings(skip in publish := true)
 
 lazy val core = (project in file("core"))
   .settings(commonSettings)

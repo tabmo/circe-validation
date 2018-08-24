@@ -12,13 +12,13 @@ This library is hightly inspired by [jto-validation](https://github.com/jto/vali
 Circe Validation is currently available 2.1X
 Import Circe Validation library, by adding this dependdency in your `build.sbt`
 ```scala
-io.tabmo % circe-validation-core % currentversion
+io.tabmo % circe-validation-core % 0.0.1
 ```
 
 If you require some other functionality, you can pick-and-choose from amongst these modules :
 
  - `circe-validation_extra-rules` : Rules rules for Integer, String & Date
- - `circe-validation-extra-rules-joda` : Aditional rules for Joda 
+ - `circe-validation-extra-rules-joda` : Aditional rules for Joda
 
 ## Example
 ### Using existing rules
@@ -30,19 +30,19 @@ import io.tabmo.json.rules._
 
 case class Person(firstName: String, lastName: String, age: Int, email: String, dateOfBirth: Date)
 
-val decodePerson: Decoder[Person] = new Decoder[Person] {  
-  override def apply(c: HCursor): Result[Person] = {  
-    for {  
-      name        <- c.downField("name").read(StringRules.maxLength(32))  
-      lastName    <- c.downField("lastName").as[String]  
-      age         <- c.downField("age").read(IntRules.positive())  
-      email       <- c.downField("email").read(StringRules.email)  
-      dateOfBirth <- c.downField("dateOfBirth").read(DateRules.date)  
-    } yield Person(name, lastName, age, email, dateOfBirth)  
-  }  
+val decodePerson: Decoder[Person] = new Decoder[Person] {
+  override def apply(c: HCursor): Result[Person] = {
+    for {
+      name        <- c.downField("name").read(StringRules.maxLength(32))
+      lastName    <- c.downField("lastName").as[String]
+      age         <- c.downField("age").read(IntRules.positive())
+      email       <- c.downField("email").read(StringRules.email)
+      dateOfBirth <- c.downField("dateOfBirth").read(DateRules.date)
+    } yield Person(name, lastName, age, email, dateOfBirth)
+  }
 }
 
-val personJson = Json.obj(  
+val personJson = Json.obj(
   "name" -> "Kevin".asJson,
   "lastName" -> "Mg".asJson,
   "age" -> 24.asJson,
@@ -158,5 +158,3 @@ List of current maintainers :
 Circe Validation is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) (the "License"); you may not use this file except in compliance with the License. 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-
