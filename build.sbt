@@ -2,8 +2,8 @@ import sbt._
 import Dependencies._
 
 organization in ThisBuild := "io.tabmo"
-scalaVersion in ThisBuild := "2.12.2"
-version in ThisBuild      := "0.1.1"
+scalaVersion in ThisBuild := "2.12.6"
+version in ThisBuild      := "0.0.1"
 name                      := "Circe Validation"
 bintrayOrganization       := Some("tabmo")
 
