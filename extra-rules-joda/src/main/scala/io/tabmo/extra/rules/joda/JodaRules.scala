@@ -24,13 +24,6 @@ object JodaRules extends GenericRules {
   })
 
   /**
-    * Default Rule for the `java.util.DateTime` type.
-    */
-  def jodaTime: Rule[Long, DateTime] = Rule((lg: Long) => {
-    Valid(new org.joda.time.DateTime(lg))
-  })
-
-  /**
     * the default implicit JodaDate reads
     * It uses the default date format: `yyyy-MM-dd`
     */
@@ -51,6 +44,13 @@ object JodaRules extends GenericRules {
     * The default implicit Rule for `org.joda.time.LocalDate`
     */
   def jodaLocalDate: Rule[String, LocalDate] = jodaLocalDateWithPattern("")
+
+  /**
+    * Default Rule for the `java.util.DateTime` type.
+    */
+  def jodaFromLong: Rule[Long, DateTime] = Rule((lg: Long) => {
+    Valid(new org.joda.time.DateTime(lg))
+  })
 
   /**
     * ISO 8601 Reads

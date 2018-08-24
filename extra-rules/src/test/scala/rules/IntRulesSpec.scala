@@ -1,16 +1,10 @@
 package rules
 
-import cats.data.Validated.{Invalid, Valid}
+import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.IntRules
-import io.tabmo.json.rules.{Rule, ValidationError}
 import org.scalacheck.Gen
-import org.scalatest.prop.PropertyChecks
-import org.scalatest.{Matchers, WordSpec}
 
-class IntRulesSpec extends WordSpec with PropertyChecks with Matchers {
-
-  def executeRule(r: Rule[Int, Int], value: Int) = r.rule.apply(value)
-  def generateRuleError(error: String) = Invalid(ValidationError(error))
+class IntRulesSpec extends RulesSpec {
 
   "Int rules" when {
     "a positive rule" should {
