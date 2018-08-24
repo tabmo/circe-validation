@@ -131,6 +131,123 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
         }
       }
     }
+
+    "readArray method" should {
+      "accept validated rules" in {
+        case class TestDecodeArray(value: Array[String])
+
+        val testDecodeArrayDecoder: Decoder[TestDecodeArray] = new Decoder[TestDecodeArray] {
+          override def apply(c: HCursor): Result[TestDecodeArray] =
+            c.readArray(valid).flatMap(v => Right(TestDecodeArray(v)))
+        }
+
+        def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
+
+        forAll(Gen.listOf(Gen.alphaStr)) { strList =>
+          val jsArr = listToJsArray(strList)
+
+          inside(testDecodeArrayDecoder.decodeJson(jsArr).right.get) { case TestDecodeArray(value) =>
+            value should contain theSameElementsAs strList
+          }
+        }
+      }
+    }
+
+    "readList method" should {
+      "accept validated rules" in {
+        case class TestDecodeList(value: List[String])
+
+        val testDecodeArrayDecoder: Decoder[TestDecodeList] = new Decoder[TestDecodeList] {
+          override def apply(c: HCursor): Result[TestDecodeList] =
+            c.readList(valid).flatMap(v => Right(TestDecodeList(v)))
+        }
+
+        def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
+
+        forAll(Gen.listOf(Gen.alphaStr)) { strList =>
+          val jsArr = listToJsArray(strList)
+
+          inside(testDecodeArrayDecoder.decodeJson(jsArr).right.get) { case TestDecodeList(value) =>
+            value should contain theSameElementsAs strList
+          }
+        }
+      }
+    }
+
+    "readVector method" should {
+      "accept validated rules" in {
+        case class TestDecodeVector(value: Vector[String])
+
+        val testDecodeVectorDecoder: Decoder[TestDecodeVector] = new Decoder[TestDecodeVector] {
+          override def apply(c: HCursor): Result[TestDecodeVector] =
+            c.readVector(valid).flatMap(v => Right(TestDecodeVector(v)))
+        }
+
+        def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
+
+        forAll(Gen.listOf(Gen.alphaStr)) { strList =>
+          val jsArr = listToJsArray(strList)
+
+          inside(testDecodeVectorDecoder.decodeJson(jsArr).right.get) { case TestDecodeVector(value) =>
+            value should contain theSameElementsAs strList
+          }
+        }
+      }
+    }
+
+    "readTraversable method" should {
+      "accept validated rules" in {
+        case class TestDecodeTraversable(value: Traversable[String])
+
+        val testDecodeTraversableDecoder: Decoder[TestDecodeTraversable] = new Decoder[TestDecodeTraversable] {
+          override def apply(c: HCursor): Result[TestDecodeTraversable] =
+            c.readTraversable(valid).flatMap(v => Right(TestDecodeTraversable(v)))
+        }
+
+        def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
+
+        forAll(Gen.listOf(Gen.alphaStr)) { strList =>
+          val jsArr = listToJsArray(strList)
+
+          inside(testDecodeTraversableDecoder.decodeJson(jsArr).right.get) { case TestDecodeTraversable(value) =>
+            value should contain theSameElementsAs strList
+          }
+        }
+      }
+    }
+
+    "readSet method" should {
+      "accept validated rules with an empty Json Array" in {
+        case class TestDecodeSet(value: Set[String])
+
+        val testDecodeSetDecoder: Decoder[TestDecodeSet] = new Decoder[TestDecodeSet] {
+          override def apply(c: HCursor): Result[TestDecodeSet] =
+            c.readSet(valid).flatMap(v => Right(TestDecodeSet(v)))
+        }
+
+        val emptyJsArray = Json.arr()
+
+        inside(testDecodeSetDecoder.decodeJson(emptyJsArray).right.get) { case TestDecodeSet(value) =>
+          value should contain theSameElementsAs Nil
+        }
+      }
+
+      "accept validated rules with an not empty Json Array" in {
+        case class TestDecodeSet(value: Set[String])
+
+        val testDecodeSetDecoder: Decoder[TestDecodeSet] = new Decoder[TestDecodeSet] {
+          override def apply(c: HCursor): Result[TestDecodeSet] =
+            c.readSet(valid).flatMap(v => Right(TestDecodeSet(v)))
+        }
+
+        val notEmptyArray = ("1", "1", "2", "3", "2").asJson
+
+        inside(testDecodeSetDecoder.decodeJson(notEmptyArray).right.get) { case TestDecodeSet(value) =>
+          value should contain only ("1", "2", "3")
+        }
+      }
+
+    }
   }
 
 }
