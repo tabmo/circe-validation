@@ -13,6 +13,8 @@ package object rules {
 
     def read[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[O] = rule.execute(c)
 
+    def readOpt[I, O](rule: Rule[I, O])(implicit d: Decoder[Option[I]]): Result[Option[O]] = rule.executeOption(c)
+
     def readSeq[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Seq[O]] = rule.executeSeq(c)
 
     def readArray[I, O](rule: Rule[I, O])(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Array[O]]): Result[Array[O]] = rule.executeArray(c)
