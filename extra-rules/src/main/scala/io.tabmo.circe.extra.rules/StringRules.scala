@@ -9,10 +9,6 @@ object StringRules extends GenericRules {
   protected[this] val patternUrl = """(?i)\b(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;${}]*[-A-Za-z0-9+&@#/%=~_|${}]""".r
 
   def toLowerCase: Rule[String, String] = Rule((str: String) => { Valid(str.toLowerCase) })
-  def replaceHiByEmoji: Rule[String, String] = Rule((str: String) => { Valid(str.replaceAll("Hi", ":wave:")) })
-
-  def sayHello(errorCode: String = "error.say.hello.:rage:"): Rule[String, String] =
-    validateWith[String](errorCode)(_.contains("Hello"))
 
   def toUpperCase: Rule[String, String] = Rule((str: String) => { Valid(str.toUpperCase) })
 
@@ -33,4 +29,7 @@ object StringRules extends GenericRules {
 
   def isEmpty(errorCode: String = "error.is.empty"): Rule[String, String] =
     validateWith[String](errorCode)(!_.isEmpty)
+
+  def notBlank(errorCode: String = "error.blank") =
+    validateWith[String](errorCode) { !_.trim.isEmpty }
 }

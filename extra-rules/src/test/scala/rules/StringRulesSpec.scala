@@ -67,6 +67,18 @@ class StringRulesSpec extends RulesSpec {
       }
     }
 
+    "a notBlank rule" should {
+      "accept a String with at least one character" in {
+        forAll(Gen.alphaStr.filter(_.nonEmpty)) { str =>
+          executeRule(StringRules.notBlank(), str) should ===(Valid(str))
+        }
+      }
+
+      "reject a String with the space" in {
+        executeRule(StringRules.notBlank(), "    ") should ===(generateRuleError("error.blank"))
+      }
+    }
+
     "a url pattern rule" should {
 
       val r = new Random()
