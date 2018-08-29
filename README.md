@@ -38,14 +38,14 @@ import io.tabmo.json.rules._
 case class Person(firstName: String, lastName: String, age: Int, email: String, dateOfBirth: Date, nickname: Option[String])  
   
 val decodePerson: Decoder[Person] = Decoder.instance[Person] { (c: Hcursor) =>  
-	for {  
-	  name        <- c.downField("name").read(StringRules.maxLength(32))  
-	  lastName    <- c.downField("lastName").as[String]  
-	  age         <- c.downField("age").read(IntRules.positive())  
-	  email       <- c.downField("email").read(StringRules.email)  
-	  dateOfBirth <- c.downField("dateOfBirth").read(DateRules.date)  
-	  nickname    <- c.downField("nickname").readOpt(StringRules.maxLength(32))  
-	} yield Person(name, lastName, age, email, dateOfBirth, nickname)
+  for {
+    name        <- c.downField("name").read(StringRules.maxLength(32))
+    lastName    <- c.downField("lastName").as[String]
+    age         <- c.downField("age").read(IntRules.positive())
+    email       <- c.downField("email").read(StringRules.email)
+    dateOfBirth <- c.downField("dateOfBirth").read(DateRules.date)
+    nickname    <- c.downField("nickname").readOpt(StringRules.maxLength(32))
+  } yield Person(name, lastName, age, email, dateOfBirth, nickname)
 }  
   
 val personJson = Json.obj(  
