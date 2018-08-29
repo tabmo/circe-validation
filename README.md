@@ -5,15 +5,15 @@
 [![Gitter](https://badges.gitter.im/tabmo/circe-validation.svg)](https://gitter.im/tabmo/circe-validation?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)  
   
 ## Overview  
-Circe Validation is a library wich provides a rules mechanism for decoding circe Json.  
-This library is hightly inspired by [jto-validation](https://github.com/jto/validation)  
+Circe Validation is a library which provides a rules mechanism for decoding circe Json.  
+This library is highly inspired by [jto-validation](https://github.com/jto/validation)  
   
 ## Getting Started  
   
 Circe Validation is currently available 2.1X  
-Import Circe Validation library, by adding this dependdency in your `build.sbt`  
+Import Circe Validation library, by adding this dependency in your `build.sbt`  
 ```scala  
-"io.tabmo" %% "circe-validation-core" % "0.0.1"  
+"io.tabmo" %% "circe-validation-core" % "0.0.2"
 ```  
   
 and the following resolver  
@@ -85,7 +85,7 @@ val personJson = Json.obj(
 ```  
 ### Apply a transformation  
   
-You can using a tranformation rule  
+You can use a transformation rule  
 ```scala  
 import io.circe.syntax._  
 import io.tabmo.json.rules._  
