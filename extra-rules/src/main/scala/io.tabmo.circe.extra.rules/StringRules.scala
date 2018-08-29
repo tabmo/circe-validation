@@ -29,4 +29,7 @@ object StringRules extends GenericRules {
 
   def isEmpty(errorCode: String = "error.is.empty"): Rule[String, String] =
     validateWith[String](errorCode)(!_.isEmpty)
+
+  def notBlank(errorCode: String = "error.blank") =
+    validateWith[String](errorCode) { !_.trim.isEmpty }
 }
