@@ -34,7 +34,6 @@ class ExecutorRulesSpec extends FlatSpec with Matchers with GenericRules with Pr
 
   "Rule executor monad" should
     "have a valid left identity law" in {
-
       forAll(Gen.alphaStr, Gen.alphaStr) { case (s1: String, s2: String) =>
         val f = (str: String) => Rule((str: String) => Valid(str.toUpperCase))
         val a = (str: String) => Valid(s1)
