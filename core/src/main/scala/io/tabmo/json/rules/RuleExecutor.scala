@@ -10,6 +10,15 @@ private[rules] trait RuleExecutor[I, O] { self: Rule[I, O] =>
   def execute(cursor: ACursor)(implicit d: Decoder[I]): Result[O] =
     cursor.as(createCustomDecoder(d))
 
+  def executeOption(cursor: ACursor)(implicit d: Decoder[Option[I]]): Result[Option[O]] = {
+    val customDecoderOpt = d.emap {
+      case Some(value)  => validate(value).fold(err => Left(err.toError), decodedValue =>  Right(Some(decodedValue)))
+      case None         => Right(None)
+    }
+
+    cursor.as(customDecoderOpt)
+  }
+
   def executeSeq(cursor: ACursor)(implicit d: Decoder[I]): Result[Seq[O]] =
     cursor.as[Seq[O]](Decoder.decodeSeq(createCustomDecoder))
 
