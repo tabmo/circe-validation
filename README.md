@@ -13,7 +13,7 @@ This library is highly inspired by [jto-validation](https://github.com/jto/valid
 Circe Validation is currently available 2.1X  
 Import Circe Validation library, by adding this dependency in your `build.sbt`  
 ```scala  
-"io.tabmo" %% "circe-validation-core" % "0.0.2"
+"io.tabmo" %% "circe-validation-core" % "0.0.3"
 ```  
   
 and the following resolver  
