@@ -54,5 +54,24 @@ class BigDecimalRulesSpec extends RulesSpec {
       }
     }
 
+    "a scale decimal rule" should {
+
+      "accept a BigDecimal and scale it half up by default" in {
+        executeRule(BigDecimalRules.scaleDecimal(2), BigDecimal(1.377)) should===(Valid(BigDecimal(1.38)))
+      }
+
+      "accept a BigDecimal and scale it half down" in {
+        executeRule(BigDecimalRules.scaleDecimal(2, BigDecimal.RoundingMode.HALF_DOWN), BigDecimal(1.143)) should===(Valid(BigDecimal(1.14)))
+      }
+
+      "accept a BigDecimal and scale it up" in {
+        executeRule(BigDecimalRules.scaleDecimal(2, BigDecimal.RoundingMode.UP), BigDecimal(1.123)) should===(Valid(BigDecimal(1.13)))
+      }
+
+      "accept a BigDecimal and scale it down" in {
+        executeRule(BigDecimalRules.scaleDecimal(2, BigDecimal.RoundingMode.DOWN), BigDecimal(1.156)) should===(Valid(BigDecimal(1.15)))
+      }
+    }
+
   }
 }
