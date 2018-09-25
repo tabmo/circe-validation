@@ -3,7 +3,7 @@ import sbt._
 
 organization in ThisBuild := "io.tabmo"
 scalaVersion in ThisBuild := "2.12.6"
-version in ThisBuild      := "0.0.3"
+version in ThisBuild      := "0.0.4"
 name                      := "Circe Validation"
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
