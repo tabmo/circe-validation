@@ -25,7 +25,7 @@ package object rules {
 
     def readVector[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Vector[O]] = rule.executeVector(c)
 
-    def readTraversable[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Traversable[O]] = rule.executeTraversable(c)
+    def readIterable[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Iterable[O]] = rule.executeIterable(c)
 
     def readOrElse[I, O](rule: Rule[I, O])(ruleOrElse: Rule[I, O])(implicit d: Decoder[I]): Result[O] = read(rule).orElse(read(ruleOrElse))
 

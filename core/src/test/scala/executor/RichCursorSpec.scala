@@ -243,13 +243,13 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       }
     }
 
-    "readTraversable method" should {
+    "readIterable method" should {
       "accept validated rules" in {
-        case class TestDecodeTraversable(value: Traversable[String])
+        case class TestDecodeIterable(value: Iterable[String])
 
-        val testDecodeTraversableDecoder: Decoder[TestDecodeTraversable] = new Decoder[TestDecodeTraversable] {
-          override def apply(c: HCursor): Result[TestDecodeTraversable] =
-            c.readTraversable(validRule[String]).flatMap(v => Right(TestDecodeTraversable(v)))
+        val testDecodeIterableDecoder: Decoder[TestDecodeIterable] = new Decoder[TestDecodeIterable] {
+          override def apply(c: HCursor): Result[TestDecodeIterable] =
+            c.readIterable(validRule[String]).flatMap(v => Right(TestDecodeIterable(v)))
         }
 
         def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
@@ -257,7 +257,7 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
         forAll(Gen.listOf(Gen.alphaStr)) { strList =>
           val jsArr = listToJsArray(strList)
 
-          inside(testDecodeTraversableDecoder.decodeJson(jsArr).right.get) { case TestDecodeTraversable(value) =>
+          inside(testDecodeIterableDecoder.decodeJson(jsArr).right.get) { case TestDecodeIterable(value) =>
             value should contain theSameElementsAs strList
           }
         }

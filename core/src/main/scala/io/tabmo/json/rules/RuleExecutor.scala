@@ -34,8 +34,8 @@ private[rules] trait RuleExecutor[I, O] { self: Rule[I, O] =>
   def executeVector(cursor: ACursor)(implicit d: Decoder[I]): Result[Vector[O]] =
     cursor.as[Vector[O]](Decoder.decodeVector(createCustomDecoder))
 
-  def executeTraversable(cursor: ACursor)(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Traversable[O]]): Result[Traversable[O]] =
-    cursor.as[Traversable[O]](Decoder.decodeTraversable(createCustomDecoder, cbf))
+  def executeIterable(cursor: ACursor)(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Iterable[O]]): Result[Iterable[O]] =
+    cursor.as[Iterable[O]](Decoder.decodeIterable(createCustomDecoder, cbf))
 
   def executeMap(cursor: ACursor)(implicit decodeK: KeyDecoder[I], d: Decoder[O]): Result[Map[I, O]] =
     cursor.as[Map[I, O]](Decoder.decodeMap(decodeK, d))
