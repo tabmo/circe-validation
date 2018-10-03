@@ -27,7 +27,7 @@ object StringRules extends GenericRules {
   def minLength(minLength: Int, errorCode: String = "error.minimum.length"): Rule[String, String] =
     validateWith[String](errorCode)(_.length > minLength)
 
-  def isEmpty(errorCode: String = "error.is.empty"): Rule[String, String] =
+  def isNotEmpty(errorCode: String = "error.is.not.empty"): Rule[String, String] =
     validateWith[String](errorCode)(!_.isEmpty)
 
   def notBlank(errorCode: String = "error.blank") =

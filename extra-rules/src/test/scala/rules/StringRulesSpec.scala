@@ -39,16 +39,16 @@ class StringRulesSpec extends RulesSpec {
       }
     }
 
-    "a isEmpty rule" should {
+    "a isNotEmpty rule" should {
 
       "accept a String doesn't empty" in {
         forAll(Gen.alphaStr.filter(_.length != 0)) { str =>
-          executeRule(StringRules.isEmpty(), str) should ===(Valid(str))
+          executeRule(StringRules.isNotEmpty(), str) should ===(Valid(str))
         }
       }
 
       "reject a String with an upper-sized cod" in {
-        executeRule(StringRules.isEmpty(), "") should ===(generateRuleError("error.is.empty"))
+        executeRule(StringRules.isNotEmpty(), "") should ===(generateRuleError("error.is.not.empty"))
       }
     }
 
