@@ -25,13 +25,13 @@ class IntRulesSpec extends RulesSpec {
     "a max value rule" should {
 
       "accept an Int which is under the maximum value" in {
-        forAll(Gen.chooseNum(1, 49)) { value =>
+        forAll(Gen.chooseNum(1, 50)) { value =>
           executeRule(IntRules.max(50), value) should ===(Valid(value))
         }
       }
 
       "reject an Int which is under the maximum value" in {
-        forAll(Gen.chooseNum(2, 49)) { value =>
+        forAll(Gen.chooseNum(2, 50)) { value =>
           executeRule(IntRules.max(1), value) should ===(generateRuleError("error.max.size"))
         }
       }
@@ -40,7 +40,7 @@ class IntRulesSpec extends RulesSpec {
     "a min value rule" should {
 
       "accept an Int which is upper the minimum value" in {
-        forAll(Gen.chooseNum(2, 50)) { value =>
+        forAll(Gen.chooseNum(1, 50)) { value =>
           executeRule(IntRules.min(1), value) should ===(Valid(value))
         }
       }
