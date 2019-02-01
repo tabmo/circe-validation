@@ -5,7 +5,7 @@ object Dependencies {
   object Version {
     val kindProjectionV = "0.9.7"
     val scalatestCatsV  = "2.3.1"
-    val circeV          = "0.10.0"
+    val circeV          = "0.11.1"
     val scalatestV      = "3.0.5"
     val jodaV           = "2.10"
     val scalacheckV     = "1.13.4"
