@@ -3,8 +3,9 @@ package rules
 import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.IntRules
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class IntRulesSpec extends RulesSpec {
+class IntRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
   "Int rules" when {
     "a positive rule" should {

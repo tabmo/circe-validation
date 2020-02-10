@@ -10,12 +10,14 @@ import cats.data.Validated.{Invalid, Valid}
 import io.tabmo.extra.rules.joda.JodaRules
 import io.tabmo.json.rules.{Rule, ValidationError}
 import org.scalacheck.Gen
-import org.scalatest.{Inside, Matchers, WordSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.Inside
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.util.Random
 
-class JodaRulesSpec extends WordSpec with PropertyChecks with Matchers with Inside {
+class JodaRulesSpec extends AnyWordSpec with Matchers with Inside with ScalaCheckPropertyChecks {
 
   def executeRule[I, O](r: Rule[I, O], value: I) = r.rule.apply(value)
   def generateRuleError(error: String, args: String*) = Invalid(ValidationError(error, args: _*))
