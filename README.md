@@ -11,11 +11,18 @@ This library is highly inspired by [jto-validation](https://github.com/jto/valid
 ## Getting Started  
   
 Circe Validation is currently available 2.1X  
-Import Circe Validation library, by adding this dependency in your `build.sbt`  
+Import Circe Validation library, by adding this dependency in your `build.sbt`
+
+Scala <2.13  
 ```scala  
 "io.tabmo" %% "circe-validation-core" % "0.0.6"
 ```  
   
+  Scala 2.13 version :
+  
+  ```scala  
+  "io.tabmo" %% "circe-validation-core" % "0.1.0"
+  ```  
 and the following resolver  
   
 ```scala  

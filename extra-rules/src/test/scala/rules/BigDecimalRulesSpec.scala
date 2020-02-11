@@ -3,8 +3,9 @@ package rules
 import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.BigDecimalRules
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class BigDecimalRulesSpec extends RulesSpec {
+class BigDecimalRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
   def genBigDecimal(min: Int, max: Int) = Gen.choose(min, max).map(BigDecimal.apply)
 

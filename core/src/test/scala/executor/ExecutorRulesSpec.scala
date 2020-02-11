@@ -4,10 +4,11 @@ import cats.data.Validated.Valid
 import cats.scalatest.ValidatedMatchers
 import io.tabmo.json.rules.GenericRules
 import org.scalacheck.Gen
-import org.scalatest.prop.PropertyChecks
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class ExecutorRulesSpec extends FlatSpec with Matchers with GenericRules with PropertyChecks with ValidatedMatchers {
+class ExecutorRulesSpec extends AnyFlatSpec with Matchers with ScalaCheckPropertyChecks with GenericRules with ValidatedMatchers {
 
   import io.tabmo.json.rules._
 
@@ -34,9 +35,9 @@ class ExecutorRulesSpec extends FlatSpec with Matchers with GenericRules with Pr
 
   "Rule executor monad" should
     "have a valid left identity law" in {
-      forAll(Gen.alphaStr, Gen.alphaStr) { case (s1: String, s2: String) =>
-        val f = (str: String) => Rule((str: String) => Valid(str.toUpperCase))
-        val a = (str: String) => Valid(s1)
+      forAll { (s1: String, s2: String) =>
+        val f = (_: String) => Rule((str: String) => Valid(str.toUpperCase))
+        val a = (_: String) => Valid(s1)
         val lhs = Rule(a).flatMap(f)
 
         val rhs = f(s1)
@@ -60,8 +61,8 @@ class ExecutorRulesSpec extends FlatSpec with Matchers with GenericRules with Pr
 
     it should "have a valid associativity law" in {
       val m = Rule((str: String) => { Valid(str.toUpperCase) })
-      val f = (str: String) => Rule((str: String) => Valid(str.toUpperCase))
-      val g = (str: String) => Rule((str: String) => Valid(str.trim))
+      val f = (_: String) => Rule((str: String) => Valid(str.toUpperCase))
+      val g = (_: String) => Rule((str: String) => Valid(str.trim))
 
       val lhs = m.flatMap(f).flatMap(g)
       val rhs = m.flatMap(x => f(x).flatMap(g))

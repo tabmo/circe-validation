@@ -6,10 +6,13 @@ import io.circe.Decoder.Result
 import io.circe.{Decoder, DecodingFailure, HCursor, Json}
 import io.tabmo.json.rules.GenericRules
 import org.scalacheck.Gen
-import org.scalatest.{Inside, Matchers, WordSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.Inside
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with GenericRules with Inside with EitherMatchers {
+
+class RichCursorSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Matchers with GenericRules with Inside with EitherMatchers {
 
   import io.circe.syntax._
   import io.tabmo.json.rules._
@@ -49,7 +52,7 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       }
 
       forAll(personGenerator) { case p: Person =>
-        inside(decodePerson.decodeJson(personToJson(p)).right.get) { case Person(firstName, name, list) =>
+        inside(decodePerson.decodeJson(personToJson(p)).getOrElse(Person("", "", Seq("")))) { case Person(firstName, name, list) =>
           firstName should be (p.firstName)
           name      should be (p.lastName)
           list      should be (p.list)
@@ -68,7 +71,7 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       }
 
       forAll(personGenerator) { case p: Person =>
-        inside(decodePerson.decodeJson(personToJson(p)).left.get) { case DecodingFailure(error, errorField) =>
+        inside(decodePerson.decodeJson(personToJson(p)).swap.getOrElse(DecodingFailure("", List()))) { case DecodingFailure(error, errorField) =>
           error           should be ("invalid")
           errorField.head should be (DownField("name"))
         }
@@ -77,18 +80,16 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
 
     "orElse method" should {
       "accept the first statement" in {
-        val decodePerson: Decoder[Person] = new Decoder[Person] {
-          override def apply(c: HCursor): Result[Person] = {
-            for {
-              name <- c.downField("name").readOrElse[String, String](validRule)(invalidRule)
-              lastName <- c.downField("lastName").as[String]
-              list <- c.downField("list").readSeq(validRule[String])
-            } yield Person(name, lastName, list)
-          }
+        val decodePerson: Decoder[Person] = (c: HCursor) => {
+          for {
+            name <- c.downField("name").readOrElse[String, String](validRule)(invalidRule)
+            lastName <- c.downField("lastName").as[String]
+            list <- c.downField("list").readSeq(validRule[String])
+          } yield Person(name, lastName, list)
         }
 
         forAll(personGenerator) { case p: Person =>
-          inside(decodePerson.decodeJson(personToJson(p)).right.get) { case Person(firstName, name, list) =>
+          inside(decodePerson.decodeJson(personToJson(p)).getOrElse(Person("", "", Seq("")))) { case Person(firstName, name, list) =>
             firstName should be (p.firstName)
             name      should be (p.lastName)
             list      should be (p.list)
@@ -107,7 +108,7 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
         }
 
         forAll(personGenerator) { case p: Person =>
-          inside(decodePerson.decodeJson(personToJson(p)).right.get) { case Person(firstName, name, _) =>
+          inside(decodePerson.decodeJson(personToJson(p)).getOrElse(Person("", "", Seq("")))) { case Person(firstName, name, _) =>
             firstName should be (p.firstName)
             name      should be (p.lastName)
           }
@@ -115,17 +116,15 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       }
 
       "reject the first statement and the second" in {
-        val decodePerson: Decoder[Person] = new Decoder[Person] {
-          override def apply(c: HCursor): Result[Person] = {
-            for {
-              name <- c.downField("name").readOrElse[String, String](invalidRule)(invalidRule)
-              lastName <- c.downField("lastName").as[String]
-            } yield Person(name, lastName)
-          }
+        val decodePerson: Decoder[Person] = (c: HCursor) => {
+          for {
+            name <- c.downField("name").readOrElse[String, String](invalidRule)(invalidRule)
+            lastName <- c.downField("lastName").as[String]
+          } yield Person(name, lastName)
         }
 
         forAll(personGenerator) { case p: Person =>
-          inside(decodePerson.decodeJson(personToJson(p)).left.get) { case DecodingFailure(error, errorField) =>
+          inside(decodePerson.decodeJson(personToJson(p)).swap.getOrElse(DecodingFailure("", List()))) { case DecodingFailure(error, errorField) =>
             error           should be ("invalid")
             errorField.head should be (DownField("name"))
           }
@@ -140,15 +139,12 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
 
       "return Some(result), with a valid rule" in {
 
-        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = new Decoder[TestDecodeOpt] {
-          override def apply(c: HCursor): Result[TestDecodeOpt] =
-            c.readOpt(validRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
-        }
+        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = (c: HCursor) => c.readOpt(validRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
 
         forAll(Gen.alphaStr) { case valueGen =>
           val jsStr = strToJsString(valueGen)
 
-          inside(testDecodeOptDecoder.decodeJson(jsStr).right.get) { case TestDecodeOpt(value) =>
+          inside(testDecodeOptDecoder.decodeJson(jsStr).getOrElse(TestDecodeOpt(None))) { case TestDecodeOpt(value) =>
             value should be (Some(valueGen))
           }
         }
@@ -156,10 +152,7 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
 
       "reject invalid rule" in {
 
-        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = new Decoder[TestDecodeOpt] {
-          override def apply(c: HCursor): Result[TestDecodeOpt] =
-            c.readOpt(invalidRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
-        }
+        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = (c: HCursor) => c.readOpt(invalidRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
 
         forAll(Gen.alphaStr) { case valueGen =>
           val jsStr = strToJsString(valueGen)
@@ -169,12 +162,9 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       }
 
       "return None value when the value is null" in {
-        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = new Decoder[TestDecodeOpt] {
-          override def apply(c: HCursor): Result[TestDecodeOpt] =
-            c.readOpt(invalidRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
-        }
+        val testDecodeOptDecoder: Decoder[TestDecodeOpt] = (c: HCursor) => c.readOpt(invalidRule[String]).flatMap(v => Right(TestDecodeOpt(v)))
 
-        inside(testDecodeOptDecoder.decodeJson(Json.Null).right.get) { case TestDecodeOpt(value) =>
+        inside(testDecodeOptDecoder.decodeJson(Json.Null).getOrElse(TestDecodeOpt(None))) { case TestDecodeOpt(value) =>
           value should be (None)
         }
       }
@@ -184,17 +174,14 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules" in {
         case class TestDecodeArray(value: Array[String])
 
-        val testDecodeArrayDecoder: Decoder[TestDecodeArray] = new Decoder[TestDecodeArray] {
-          override def apply(c: HCursor): Result[TestDecodeArray] =
-            c.readArray(validRule[String]).flatMap(v => Right(TestDecodeArray(v)))
-        }
+        val testDecodeArrayDecoder: Decoder[TestDecodeArray] = (c: HCursor) => c.readArray(validRule[String]).flatMap(v => Right(TestDecodeArray(v)))
 
         def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
 
         forAll(Gen.listOf(Gen.alphaStr)) { strList =>
           val jsArr = listToJsArray(strList)
 
-          inside(testDecodeArrayDecoder.decodeJson(jsArr).right.get) { case TestDecodeArray(value) =>
+          inside(testDecodeArrayDecoder.decodeJson(jsArr).getOrElse(TestDecodeArray(Array()))) { case TestDecodeArray(value) =>
             value should contain theSameElementsAs strList
           }
         }
@@ -205,17 +192,14 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules" in {
         case class TestDecodeList(value: List[String])
 
-        val testDecodeArrayDecoder: Decoder[TestDecodeList] = new Decoder[TestDecodeList] {
-          override def apply(c: HCursor): Result[TestDecodeList] =
-            c.readList(validRule[String]).flatMap(v => Right(TestDecodeList(v)))
-        }
+        val testDecodeArrayDecoder: Decoder[TestDecodeList] = (c: HCursor) => c.readList(validRule[String]).flatMap(v => Right(TestDecodeList(v)))
 
         def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
 
         forAll(Gen.listOf(Gen.alphaStr)) { strList =>
           val jsArr = listToJsArray(strList)
 
-          inside(testDecodeArrayDecoder.decodeJson(jsArr).right.get) { case TestDecodeList(value) =>
+          inside(testDecodeArrayDecoder.decodeJson(jsArr).getOrElse(TestDecodeList(List()))) { case TestDecodeList(value) =>
             value should contain theSameElementsAs strList
           }
         }
@@ -226,17 +210,14 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules" in {
         case class TestDecodeVector(value: Vector[String])
 
-        val testDecodeVectorDecoder: Decoder[TestDecodeVector] = new Decoder[TestDecodeVector] {
-          override def apply(c: HCursor): Result[TestDecodeVector] =
-            c.readVector(validRule[String]).flatMap(v => Right(TestDecodeVector(v)))
-        }
+        val testDecodeVectorDecoder: Decoder[TestDecodeVector] = (c: HCursor) => c.readVector(validRule[String]).flatMap(v => Right(TestDecodeVector(v)))
 
         def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
 
         forAll(Gen.listOf(Gen.alphaStr)) { strList =>
           val jsArr = listToJsArray(strList)
 
-          inside(testDecodeVectorDecoder.decodeJson(jsArr).right.get) { case TestDecodeVector(value) =>
+          inside(testDecodeVectorDecoder.decodeJson(jsArr).getOrElse(TestDecodeVector(Vector()))) { case TestDecodeVector(value) =>
             value should contain theSameElementsAs strList
           }
         }
@@ -247,17 +228,14 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules" in {
         case class TestDecodeIterable(value: Iterable[String])
 
-        val testDecodeIterableDecoder: Decoder[TestDecodeIterable] = new Decoder[TestDecodeIterable] {
-          override def apply(c: HCursor): Result[TestDecodeIterable] =
-            c.readIterable(validRule[String]).flatMap(v => Right(TestDecodeIterable(v)))
-        }
+        val testDecodeIterableDecoder: Decoder[TestDecodeIterable] = (c: HCursor) => c.readIterable(validRule[String]).flatMap(v => Right(TestDecodeIterable(v)))
 
         def listToJsArray(l: Seq[String]) = Json.arr(l.map(_.asJson): _*)
 
         forAll(Gen.listOf(Gen.alphaStr)) { strList =>
           val jsArr = listToJsArray(strList)
 
-          inside(testDecodeIterableDecoder.decodeJson(jsArr).right.get) { case TestDecodeIterable(value) =>
+          inside(testDecodeIterableDecoder.decodeJson(jsArr).getOrElse(TestDecodeIterable(Iterable()))) { case TestDecodeIterable(value) =>
             value should contain theSameElementsAs strList
           }
         }
@@ -268,14 +246,11 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules with an empty Json Array" in {
         case class TestDecodeSet(value: Set[String])
 
-        val testDecodeSetDecoder: Decoder[TestDecodeSet] = new Decoder[TestDecodeSet] {
-          override def apply(c: HCursor): Result[TestDecodeSet] =
-            c.readSet(validRule[String]).flatMap(v => Right(TestDecodeSet(v)))
-        }
+        val testDecodeSetDecoder: Decoder[TestDecodeSet] = (c: HCursor) => c.readSet(validRule[String]).flatMap(v => Right(TestDecodeSet(v)))
 
         val emptyJsArray = Json.arr()
 
-        inside(testDecodeSetDecoder.decodeJson(emptyJsArray).right.get) { case TestDecodeSet(value) =>
+        inside(testDecodeSetDecoder.decodeJson(emptyJsArray).getOrElse(TestDecodeSet(Set()))) { case TestDecodeSet(value) =>
           value should contain theSameElementsAs Nil
         }
       }
@@ -283,14 +258,11 @@ class RichCursorSpec extends WordSpec with PropertyChecks with Matchers with Gen
       "accept validated rules with an not empty Json Array" in {
         case class TestDecodeSet(value: Set[String])
 
-        val testDecodeSetDecoder: Decoder[TestDecodeSet] = new Decoder[TestDecodeSet] {
-          override def apply(c: HCursor): Result[TestDecodeSet] =
-            c.readSet(validRule[String]).flatMap(v => Right(TestDecodeSet(v)))
-        }
+        val testDecodeSetDecoder: Decoder[TestDecodeSet] = (c: HCursor) => c.readSet(validRule[String]).flatMap(v => Right(TestDecodeSet(v)))
 
         val notEmptyArray = ("1", "1", "2", "3", "2").asJson
 
-        inside(testDecodeSetDecoder.decodeJson(notEmptyArray).right.get) { case TestDecodeSet(value) =>
+        inside(testDecodeSetDecoder.decodeJson(notEmptyArray).getOrElse(TestDecodeSet(Set()))) { case TestDecodeSet(value) =>
           value should contain only ("1", "2", "3")
         }
       }

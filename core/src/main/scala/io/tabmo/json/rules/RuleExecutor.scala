@@ -3,7 +3,7 @@ package io.tabmo.json.rules
 import io.circe.Decoder.Result
 import io.circe.{ACursor, Decoder, KeyDecoder}
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
 private[rules] trait RuleExecutor[I, O] { self: Rule[I, O] =>
 
@@ -22,7 +22,7 @@ private[rules] trait RuleExecutor[I, O] { self: Rule[I, O] =>
   def executeSeq(cursor: ACursor)(implicit d: Decoder[I]): Result[Seq[O]] =
     cursor.as[Seq[O]](Decoder.decodeSeq(createCustomDecoder))
 
-  def executeArray(cursor: ACursor)(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Array[O]]): Result[Array[O]] =
+  def executeArray(cursor: ACursor)(implicit d: Decoder[I], cbf: Factory[O, Array[O]]): Result[Array[O]] =
     cursor.as[Array[O]](Decoder.decodeArray(createCustomDecoder, cbf))
 
   def executeSet(cursor: ACursor)(implicit d: Decoder[I]): Result[Set[O]] =
@@ -34,7 +34,7 @@ private[rules] trait RuleExecutor[I, O] { self: Rule[I, O] =>
   def executeVector(cursor: ACursor)(implicit d: Decoder[I]): Result[Vector[O]] =
     cursor.as[Vector[O]](Decoder.decodeVector(createCustomDecoder))
 
-  def executeIterable(cursor: ACursor)(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Iterable[O]]): Result[Iterable[O]] =
+  def executeIterable(cursor: ACursor)(implicit d: Decoder[I], cbf: Factory[O, Iterable[O]]): Result[Iterable[O]] =
     cursor.as[Iterable[O]](Decoder.decodeIterable(createCustomDecoder, cbf))
 
   def executeMap(cursor: ACursor)(implicit decodeK: KeyDecoder[I], d: Decoder[O]): Result[Map[I, O]] =

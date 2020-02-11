@@ -3,10 +3,11 @@ package rules
 import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.StringRules
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.util.Random
 
-class StringRulesSpec extends RulesSpec {
+class StringRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
   "String rules" when {
     "a minLength rule" should {

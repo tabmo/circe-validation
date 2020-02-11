@@ -8,11 +8,12 @@ import java.util.Calendar
 import cats.data.Validated.Valid
 import io.tabmo.circe.extra.rules.DateRules
 import org.scalacheck.Gen
-import org.scalatest.{Inside}
+import org.scalatest.Inside
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.util.Random
 
-class DateRulesSpec extends RulesSpec with Inside {
+class DateRulesSpec extends RulesSpec with Inside with ScalaCheckPropertyChecks{
 
 
   val simpleDateFormat = Seq(

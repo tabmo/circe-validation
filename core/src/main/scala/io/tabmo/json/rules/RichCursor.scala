@@ -3,11 +3,10 @@ package io.tabmo.json
 import io.circe.Decoder.Result
 import io.circe.{ACursor, Decoder}
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
 package object rules {
 
-  import cats.implicits._
 
   implicit class RichCursor(c: ACursor) {
 
@@ -17,7 +16,7 @@ package object rules {
 
     def readSeq[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Seq[O]] = rule.executeSeq(c)
 
-    def readArray[I, O](rule: Rule[I, O])(implicit d: Decoder[I], cbf: CanBuildFrom[Nothing, O, Array[O]]): Result[Array[O]] = rule.executeArray(c)
+    def readArray[I, O](rule: Rule[I, O])(implicit d: Decoder[I], cbf: Factory[O, Array[O]]): Result[Array[O]] = rule.executeArray(c)
 
     def readSet[I, O](rule: Rule[I, O])(implicit d: Decoder[I]): Result[Set[O]] = rule.executeSet(c)
 

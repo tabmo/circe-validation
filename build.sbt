@@ -2,8 +2,8 @@ import Dependencies._
 import sbt._
 
 organization in ThisBuild := "io.tabmo"
-scalaVersion in ThisBuild := "2.12.6"
-version in ThisBuild      := "0.0.6"
+scalaVersion in ThisBuild := "2.13.1"
+version in ThisBuild      := "0.1.0"
 name                      := "Circe Validation"
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
@@ -43,7 +43,8 @@ lazy val `extra-rules-joda` = (project in file("extra-rules-joda"))
 
 lazy val commonLibrairies = Seq (
   libraryDependencies += Library.scalatest,
-  libraryDependencies += Library.scalacheck
+  libraryDependencies += Library.scalacheck,
+  libraryDependencies += Library.scalacheckPlus
 )
 
 lazy val commonScalacOptions = Seq(
@@ -58,9 +59,7 @@ lazy val commonScalacOptions = Seq(
   "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
   "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
   "-Xfatal-warnings",                  // Fail the compilation if there are any warnings.
-  "-Xfuture",                          // Turn on future language features.
   "-Xlint:adapted-args",               // Warn if an argument list is modified to match the receiver.
-  "-Xlint:by-name-right-associative",  // By-name parameter of right associative operator.
   "-Xlint:constant",                   // Evaluation of a constant arithmetic expression results in an error.
   "-Xlint:delayedinit-select",         // Selecting member of DelayedInit.
   "-Xlint:doc-detached",               // A Scaladoc comment appears to be detached from its element.
@@ -75,15 +74,8 @@ lazy val commonScalacOptions = Seq(
   "-Xlint:private-shadow",             // A private field (or class parameter) shadows a superclass field.
   "-Xlint:stars-align",                // Pattern sequence wildcard must align with sequence component.
   "-Xlint:type-parameter-shadow",      // A local type parameter shadows a type already in scope.
-  "-Xlint:unsound-match",              // Pattern match may not be typesafe.
-  "-Yno-adapted-args",                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
-  "-Ypartial-unification",             // Enable partial unification in type constructor inference
   "-Ywarn-dead-code",                  // Warn when dead code is identified.
   "-Ywarn-extra-implicit",             // Warn when more than one implicit parameter section is defined.
-  "-Ywarn-inaccessible",               // Warn about inaccessible types in method signatures.
-  "-Ywarn-infer-any",                  // Warn when a type argument is inferred to be `Any`.
-  "-Ywarn-nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
-  "-Ywarn-nullary-unit",               // Warn when nullary methods return Unit.
   "-Ywarn-numeric-widen",              // Warn when numerics are widened.
   "-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
   "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
