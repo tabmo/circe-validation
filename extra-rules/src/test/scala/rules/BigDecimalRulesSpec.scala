@@ -35,7 +35,7 @@ class BigDecimalRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject an BigDecimal which is under the maximum value" in {
         forAll(genBigDecimal(2, 49)) { value =>
-          executeRule(BigDecimalRules.max(BigDecimal(1.0)), value) should ===(generateRuleError("error.max.size"))
+          executeRule(BigDecimalRules.max(BigDecimal(1.0)), value) should ===(generateRuleError("error.max.size", BigDecimal(1.0)))
         }
       }
     }
@@ -50,7 +50,7 @@ class BigDecimalRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject an Int which is upper the minimum value" in {
         forAll(genBigDecimal(1, 50)) { value =>
-          executeRule(BigDecimalRules.min(BigDecimal(51.0)), value) should ===(generateRuleError("error.min.size"))
+          executeRule(BigDecimalRules.min(BigDecimal(51.0)), value) should ===(generateRuleError("error.min.size", BigDecimal(51.0)))
         }
       }
     }

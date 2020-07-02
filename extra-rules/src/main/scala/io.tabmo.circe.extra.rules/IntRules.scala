@@ -8,9 +8,9 @@ object IntRules extends GenericRules {
     validateWith[Int](errorCode)(n => num.gt(n, num.zero))
 
   def max(max: Int, errorCode: String = "error.max.size"): Rule[Int, Int] =
-    validateWith[Int](errorCode)(_ <= max)
+    validateWith[Int](errorCode, max)(_ <= max)
 
   def min(min: Int, errorCode: String = "error.min.size"): Rule[Int, Int] =
-    validateWith[Int](errorCode)(_ >= min)
+    validateWith[Int](errorCode, min)(_ >= min)
 
 }

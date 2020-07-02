@@ -5,7 +5,7 @@ import cats.data.Validated.{Invalid, Valid}
 import scala.util.matching.Regex
 
 trait GenericRules {
-  def validateWith[I](error: String, args: String*)(f: I => Boolean): Rule[I, I] = { Rule[I, I](v => {
+  def validateWith[I](error: String, args: Any*)(f: I => Boolean): Rule[I, I] = { Rule[I, I](v => {
       if (f(v)) Valid(v)
       else Invalid(ValidationError(error, args: _*))
     })

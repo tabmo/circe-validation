@@ -20,7 +20,7 @@ class StringRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject a String with an under-sized cod" in {
         forAll(Gen.alphaStr.filter(_.length < 40)) {str =>
-          executeRule(StringRules.minLength(40), str) should ===(generateRuleError("error.minimum.length"))
+          executeRule(StringRules.minLength(40), str) should ===(generateRuleError("error.minimum.length", 40))
         }
       }
     }
@@ -35,7 +35,7 @@ class StringRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject a String with an upper-sized cod" in {
         forAll(Gen.alphaStr.filter(_.length > 40)) { str =>
-          executeRule(StringRules.maxLength(40), str) should ===(generateRuleError("error.maximum.length"))
+          executeRule(StringRules.maxLength(40), str) should ===(generateRuleError("error.maximum.length", 40))
         }
       }
     }
@@ -63,7 +63,7 @@ class StringRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject a String with a bad size" in {
         forAll(Gen.alphaStr) { str =>
-          executeRule(StringRules.length(str.length + 1), str) should ===(generateRuleError("error.length"))
+          executeRule(StringRules.length(str.length + 1), str) should ===(generateRuleError("error.length", str.length + 1))
         }
       }
     }

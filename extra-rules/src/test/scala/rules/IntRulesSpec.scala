@@ -33,7 +33,7 @@ class IntRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject an Int which is under the maximum value" in {
         forAll(Gen.chooseNum(2, 50)) { value =>
-          executeRule(IntRules.max(1), value) should ===(generateRuleError("error.max.size"))
+          executeRule(IntRules.max(1), value) should ===(generateRuleError("error.max.size", 1))
         }
       }
     }
@@ -48,7 +48,7 @@ class IntRulesSpec extends RulesSpec with ScalaCheckPropertyChecks {
 
       "reject an Int which is upper the minimum value" in {
         forAll(Gen.chooseNum(1, 50)) { value =>
-          executeRule(IntRules.min(51), value) should ===(generateRuleError("error.min.size"))
+          executeRule(IntRules.min(51), value) should ===(generateRuleError("error.min.size", 51))
         }
       }
     }
