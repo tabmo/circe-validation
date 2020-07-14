@@ -1,8 +1,12 @@
 import Dependencies._
 import sbt._
 
+lazy val scala213 = "2.13.2"
+lazy val scala212 = "2.12.11"
+lazy val supportedScalaVersions = List(scala213, scala212)
+
 organization in ThisBuild := "io.tabmo"
-scalaVersion in ThisBuild := "2.13.1"
+scalaVersion in ThisBuild := scala213
 version in ThisBuild      := "0.1.0"
 name                      := "Circe Validation"
 
@@ -11,14 +15,19 @@ licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apac
 lazy val commonSettings = Seq(
   scalacOptions         ++= commonScalacOptions,
   fork in test          := true,
-  bintrayOrganization   := Some("tabmo")
+  bintrayOrganization   := Some("tabmo"),
+  crossScalaVersions    := supportedScalaVersions
 )
 
 lazy val root = (project in file("."))
   .aggregate(core)
   .aggregate(`extra-rules`)
   .aggregate(`extra-rules-joda`)
-  .settings(skip in publish := true)
+  .settings(
+    skip in publish    := true,
+    // crossScalaVersions must be set to Nil on the aggregating project
+    crossScalaVersions := Nil
+  )
 
 lazy val core = (project in file("core"))
   .settings(commonSettings)

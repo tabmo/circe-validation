@@ -10,10 +10,10 @@ cache:
 
 language: scala
 scala: 
-  - 2.13.1
+  - 2.13.2
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION compile test
+  - sbt ++$TRAVIS_SCALA_VERSION +compile +test
 
 jdk:
   - oraclejdk9
