@@ -26,7 +26,7 @@ Scala <2.13
 and the following resolver  
   
 ```scala  
-Resolver.bintrayRepo("tabmo", "maven")  
+"Tabmo Myget Public" at "https://www.myget.org/F/tabmo-public/maven/"
 ```  
   
 If you require some other functionality, you can pick-and-choose from amongst these modules :  

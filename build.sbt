@@ -3,15 +3,16 @@ import sbt._
 
 organization in ThisBuild := "io.tabmo"
 scalaVersion in ThisBuild := "2.13.1"
-version in ThisBuild      := "0.1.0"
+version in ThisBuild      := "0.1.1"
 name                      := "Circe Validation"
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
 
 lazy val commonSettings = Seq(
-  scalacOptions         ++= commonScalacOptions,
-  fork in test          := true,
-  bintrayOrganization   := Some("tabmo")
+  scalacOptions           ++= commonScalacOptions,
+  fork in test            := true,
+  publishTo in ThisBuild  := Some("Tabmo Public MyGet" at "https://www.myget.org/F/tabmo-public/maven/"),
+  credentials += Credentials(Path.userHome / ".sbt" / ".credentials-myget") // See https://www.scala-sbt.org/1.x/docs/Publishing.html#Credentials and use the API keys from MyGet
 )
 
 lazy val root = (project in file("."))
