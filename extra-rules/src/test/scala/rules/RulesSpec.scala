@@ -7,5 +7,5 @@ import org.scalatest.matchers.should.Matchers
 
 trait RulesSpec extends AnyWordSpec with Matchers {
   def executeRule[I, O](r: Rule[I, O], value: I) = r.rule.apply(value)
-  def generateRuleError(error: String, args: String*) = Invalid(ValidationError(error, args: _*))
+  def generateRuleError(error: String, args: Any*) = Invalid(ValidationError(error, args: _*))
 }

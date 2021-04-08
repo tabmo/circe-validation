@@ -19,13 +19,13 @@ object StringRules extends GenericRules {
   def url(error: String) = pattern(patternUrl, error)
 
   def length(size: Int, errorCode: String = "error.length"): Rule[String, String] =
-    validateWith[String](errorCode)(_.length == size)
+    validateWith[String](errorCode, size)(_.length == size)
 
   def maxLength(maxLength: Int, errorCode: String = "error.maximum.length"): Rule[String, String] =
-    validateWith[String](errorCode)(_.length <= maxLength)
+    validateWith[String](errorCode, maxLength)(_.length <= maxLength)
 
   def minLength(minLength: Int, errorCode: String = "error.minimum.length"): Rule[String, String] =
-    validateWith[String](errorCode)(_.length >= minLength)
+    validateWith[String](errorCode, minLength)(_.length >= minLength)
 
   def isNotEmpty(errorCode: String = "error.is.not.empty"): Rule[String, String] =
     validateWith[String](errorCode)(!_.isEmpty)
